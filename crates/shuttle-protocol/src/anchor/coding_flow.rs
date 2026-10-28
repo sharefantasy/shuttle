@@ -1,25 +1,18 @@
 //! coding_flow — reference-form Rust anchors for the external orchestrator's **frozen coding-flow
-//! contract family** (`specs/coding-flow/contracts/`), task `C0`.
+//! contract family**.
 //!
-//! external owns and freezes these nine schemas; shuttle is a DOWNSTREAM consumer. The
+//! The external orchestrator owns and freezes these nine schemas; shuttle is a DOWNSTREAM consumer. The
 //! types here mirror the frozen JSON Schemas *fail-closed*: every struct is
 //! `#[serde(deny_unknown_fields)]` (so an arbitrary field — e.g. a raw `shell`
 //! on a quality command, or an extra field on an agent context — is rejected at
 //! deserialize), every enum rejects unknown variants, and [`CodingFlowContract::
 //! validate`] re-checks the cross-field / semantic invariants JSON Schema
-//! expresses through `allOf`/`if`/`then` and the external orchestrator's own semantic validator
-//! (`scripts/validate_contracts.py`).
+//! expresses through `allOf`/`if`/`then` and the external orchestrator's own semantic validator.
 //!
 //! shuttle never re-freezes these. It consumes them by ref + digest and copies external
-//! digests verbatim (ruling §4 / §7「绝不瞎猜」). The nine frozen digests are
+//! digests verbatim. The nine frozen digests are
 //! captured in [`schema_digests`] so any drift against the external orchestrator's `freeze-manifest.json`
 //! is a compile-time-visible constant, reconciled on upstream sync.
-//!
-//! > 待与 upstream 正本核对: the authoritative schemas live at
-//! > `specs/coding-flow/contracts/schemas/*.schema.json` in the external orchestrator host
-//! > repo, not materialized in this crate. Every field/constraint here is
-//! > transcribed from those frozen schemas + the C0 freeze manifest. Diff on
-//! > first upstream sync.
 
 use serde::{Deserialize, Serialize};
 
@@ -30,31 +23,31 @@ use super::digest::Sha256Digest;
 /// (`coding_flow_contract_freeze_manifest/v1`, task `C0`). shuttle copies these
 /// verbatim; a mismatch on upstream sync is a deliberate, visible edit.
 pub mod schema_digests {
-    /// `project_flow_code_delivery_handoff/v1` (owner: project-flow).
+    /// `shuttle_code_delivery_handoff/v1`.
     pub const HANDOFF: &str =
         "sha256:ad3dbf731381ccf72ee731ea11cfa515f18f1fe2ca2f233566a538600ae9cfb4";
-    /// `code_delivery_manifest/v1` (owner: coding-flow).
+    /// `code_delivery_manifest/v1`.
     pub const MANIFEST: &str =
         "sha256:d50d005cd63d38f67489ee0a9d4b1802596fd4d006309e4a3e524be06220dc6b";
-    /// `code_delivery_packet_plan/v1` (owner: coding-flow).
+    /// `code_delivery_packet_plan/v1`.
     pub const PACKET_PLAN: &str =
         "sha256:a180c8e3a11f8cf433c52ced0a25d112065ddc096c884f1b8802e731140fd05c";
-    /// `coding_agent_context_manifest/v1` (owner: coding-flow).
+    /// `coding_agent_context_manifest/v1`.
     pub const CONTEXT_MANIFEST: &str =
         "sha256:e03cc91518a2be5c0942ae917cbec2f1d8c6a65b4510a522d461a0446674b5f1";
     /// `coding_attempt_result/v1` (owner: agent-provider — the schema shuttle emits).
     pub const ATTEMPT_RESULT: &str =
         "sha256:43e848cb830c670f680bd2a010b9d184df0c83bc770f5b43a1162637a225ff3c";
-    /// `code_delivery_quality_plan/v1` (owner: coding-flow).
+    /// `code_delivery_quality_plan/v1`.
     pub const QUALITY_PLAN: &str =
         "sha256:ba634af4415651132125b2e4f9da3d339d104cb852409920d45d2c6885db7b29";
     /// `code_delivery_quality_receipt/v1` (owner: quality-executor).
     pub const QUALITY_RECEIPT: &str =
         "sha256:b4826fd8625e637fc11f73167d47c26370d1f9d8bc431a4daa3ee6c4688f770b";
-    /// `code_delivery_repair_decision/v1` (owner: coding-flow).
+    /// `code_delivery_repair_decision/v1`.
     pub const REPAIR_DECISION: &str =
         "sha256:d43c2ebcb5d1f74ab46d7bb1211d89f1e90e9f868978a4661a937fb2fd9b182c";
-    /// `code_delivery_receipt/v1` (owner: coding-flow).
+    /// `code_delivery_receipt/v1`.
     pub const RECEIPT: &str =
         "sha256:466d6c67c24c693dbf2c3b4d68d21c906294fdd14b5b325e5656ab37add51c89";
 }
@@ -559,7 +552,7 @@ pub enum CompletionVerdict {
 }
 
 // ---------------------------------------------------------------------------
-// 1. project_flow_code_delivery_handoff/v1
+// 1. shuttle_code_delivery_handoff/v1
 // ---------------------------------------------------------------------------
 
 /// `formal_assurance` sub-object of the handoff.
@@ -583,7 +576,7 @@ pub struct ApprovalReceipt {
     pub workspace_strategy_digest: Sha256Digest,
 }
 
-/// `project_flow_code_delivery_handoff/v1` — project-flow's authorized handoff.
+/// `shuttle_code_delivery_handoff/v1` — the external orchestrator's authorized handoff.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(deny_unknown_fields)]
 pub struct ProjectFlowCodeDeliveryHandoff {
@@ -609,7 +602,7 @@ pub struct ProjectFlowCodeDeliveryHandoff {
 }
 
 impl CodingFlowContract for ProjectFlowCodeDeliveryHandoff {
-    const SCHEMA_VERSION: &'static str = "project_flow_code_delivery_handoff/v1";
+    const SCHEMA_VERSION: &'static str = "shuttle_code_delivery_handoff/v1";
     fn validate(&self) -> Result<(), CodingFlowError> {
         check_schema_version("schema_version", Self::SCHEMA_VERSION, &self.schema_version)?;
         require_id("handoff_id", &self.handoff_id)?;

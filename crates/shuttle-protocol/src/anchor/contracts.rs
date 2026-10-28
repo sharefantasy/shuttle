@@ -1,18 +1,15 @@
 //! contracts — reference-form anchors for the 7 frozen schemas shuttle consumes.
 //!
-//! These types mirror the **upstream ruling** (,
-//! authoritative original `upstream/documents/cf_bline_ruling_ea_alignment.md`).
-//! They are *reference-form*: shuttle consumes the external orchestrator's frozen contracts by their refs +
+//! These types mirror the upstream ruling. They are *reference-form*: shuttle
+//! consumes the external orchestrator's frozen contracts by their refs +
 //! digests and the small subset of fields the ruling maps into shuttle's runtime,
 //! rather than re-declaring every external field. shuttle is a DOWNSTREAM consumer — it
 //! never freezes these; external owns the schemas.
 //!
-//! > 待与 upstream 正本核对: the frozen JSON Schemas live in
-//! > `upstream/collaboration-fabric/assets/schemas/*.schema.json`, which is NOT
-//! > materialized on this machine. Every field here is transcribed from the
-//! > ruling's frozen-field tables (§0, §4, §5). On first upstream sync, diff
-//! > each struct against its `.schema.json` and delete this banner only when
-//! > they match. Until then, unknown incoming fields are preserved (see the
+//! > The frozen JSON Schemas live in the external orchestrator's schema set,
+//! > which is not materialized in this crate. Every field here is transcribed
+//! > from the ruling's frozen-field tables. On upstream sync, diff each struct
+//! > against its `.schema.json`. Unknown incoming fields are preserved (see the
 //! > `extra` maps) so shuttle never drops external data it does not yet model.
 
 use serde::{Deserialize, Serialize};

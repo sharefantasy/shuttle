@@ -44,7 +44,7 @@ class EaMcpShimTests(unittest.TestCase):
             else []
         )
         return {
-            "schema_version": "ea_symbol_footprint/v1",
+            "schema_version": "shuttle_symbol_footprint/v1",
             "basis": {
                 "repositories": [{"repo_id": "repo:shuttle", "base_oid": "a" * 40}],
                 "symbol_index_ref": "artifact://symbol-index",
@@ -74,8 +74,8 @@ class EaMcpShimTests(unittest.TestCase):
     def _v2_advice(self, footprint):
         footprint_digest = shuttle_mcp_shim._canonical_digest(footprint)
         return {
-            "schema_version": "ea_goal_parallel_advice/v2",
-            "policy_version": "ea_hybrid_dag_policy/v1",
+            "schema_version": "shuttle_goal_parallel_advice/v2",
+            "policy_version": "shuttle_hybrid_dag_policy/v1",
             "planning_basis": {
                 "planning_ref": "planning://g10",
                 "planning_revision": "7",
@@ -102,7 +102,7 @@ class EaMcpShimTests(unittest.TestCase):
 
     def _v1_advice(self):
         return {
-            "schema_version": "ea_goal_parallel_advice/v1",
+            "schema_version": "shuttle_goal_parallel_advice/v1",
             "source_intent_ref": "artifact://intent",
             "source_intent_digest": "sha256:" + "e" * 64,
             "graph_basis": {
@@ -233,7 +233,7 @@ class EaMcpShimTests(unittest.TestCase):
 
     def test_unknown_schema_and_authority_fields_fail_closed(self):
         footprint = self._footprint()
-        footprint["schema_version"] = "ea_symbol_footprint/v99"
+        footprint["schema_version"] = "shuttle_symbol_footprint/v99"
         with self.assertRaisesRegex(ValueError, "unsupported symbol footprint"):
             shuttle_mcp_shim._validate_symbol_footprint(footprint)
         advice = self._v2_advice(self._footprint())

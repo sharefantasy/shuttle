@@ -11,7 +11,7 @@ use crate::cell_registry::{CellRunRecord, CellState};
 use crate::resource::RunResources;
 use crate::run::{ProviderCostObservation, RunTelemetry, RunTermination, UsageBreakdown};
 
-pub const USAGE_RECEIPT_SCHEMA: &str = "ea_usage_receipt/v1";
+pub const USAGE_RECEIPT_SCHEMA: &str = "shuttle_usage_receipt/v1";
 
 #[derive(Debug, Clone, Serialize)]
 pub struct UsageTerminal {

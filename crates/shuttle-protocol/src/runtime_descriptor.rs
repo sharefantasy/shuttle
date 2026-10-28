@@ -6,7 +6,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::BTreeMap;
 use std::path::Path;
 
-pub const SHUTTLE_RUNTIME_DESCRIPTOR_SCHEMA: &str = "ea_runtime_descriptor/v1";
+pub const SHUTTLE_RUNTIME_DESCRIPTOR_SCHEMA: &str = "shuttle_runtime_descriptor/v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]

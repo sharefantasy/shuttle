@@ -1,5 +1,5 @@
 {
-  "schema_version": "ea_release_config/v1",
+  "schema_version": "shuttle_release_config/v1",
   "binary_name": "shuttle",
   "package_prefix": "shuttle",
   "binary_targets": [

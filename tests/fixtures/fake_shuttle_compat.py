@@ -21,7 +21,7 @@ def footprint():
     }
     symbol = {"symbol_id": digest(identity), **identity}
     return {
-        "schema_version": "ea_symbol_footprint/v1",
+        "schema_version": "shuttle_symbol_footprint/v1",
         "basis": {
             "repositories": [{"repo_id": "repo:shuttle", "base_oid": "a" * 40}],
             "symbol_index_ref": "artifact://symbol-index", "symbol_index_digest": "sha256:" + "c" * 64,
@@ -51,7 +51,7 @@ elif args and args[0] == "goal":
         value = json.loads(footprint_path.read_text())
         footprint_digest = digest(value)
         output = {
-            "schema_version": "ea_goal_parallel_advice/v2", "policy_version": "ea_hybrid_dag_policy/v1",
+            "schema_version": "shuttle_goal_parallel_advice/v2", "policy_version": "shuttle_hybrid_dag_policy/v1",
             "planning_basis": {"planning_ref": "planning://g10", "planning_revision": "7", "planning_structure_digest": "sha256:" + "d" * 64},
             "source_intent": {"ref": "artifact://sha256/" + "e" * 64, "digest": "sha256:" + "e" * 64},
             "repository_bases": [{"repo_id": "repo:shuttle", "base_oid": "a" * 40}],
@@ -63,7 +63,7 @@ elif args and args[0] == "goal":
         }
     else:
         output = {
-            "schema_version": "ea_goal_parallel_advice/v1",
+            "schema_version": "shuttle_goal_parallel_advice/v1",
             "source_intent_ref": "artifact://intent",
             "source_intent_digest": "sha256:" + "e" * 64,
             "graph_basis": {"base_oid": "a" * 40, "symbol_index_digest": "sha256:" + "c" * 64, "correction_digest": "sha256:" + "d" * 64, "footprint_source": "planner_guess"},

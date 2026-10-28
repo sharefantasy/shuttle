@@ -2,7 +2,7 @@
 //!
 //! These types are deliberately policy-neutral projections. `shuttle-nav` owns the
 //! merge and scheduling algorithms; this module owns their closed, validated
-//! transport representation for SHUTTLE and Project Flow consumers.
+//! transport representation for SHUTTLE and external scheduler consumers.
 
 use crate::anchor::Sha256Digest;
 use crate::canonical::{canonical_digest, canonical_json, ClosedContractError};
@@ -13,7 +13,7 @@ use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 
 pub const HYBRID_PARALLEL_ADVICE_SCHEMA: &str = "shuttle_goal_parallel_advice/v2";
-pub const HYBRID_DAG_POLICY_VERSION: &str = "ea_hybrid_dag_policy/v1";
+pub const HYBRID_DAG_POLICY_VERSION: &str = "shuttle_hybrid_dag_policy/v1";
 const MAX_PAYLOAD_BYTES: usize = 4 * 1024 * 1024;
 
 /// A dependency edge: `from` is prerequisite/provider, `to` is dependent.
@@ -254,7 +254,7 @@ impl HybridFootprintSource {
     }
 }
 
-/// Minimal Project Flow scheduling projection. `write_paths` remains the final
+/// Minimal scheduling projection for an external planner. `write_paths` remains the final
 /// authority boundary; symbol exactness never grants a path scope.
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 #[serde(deny_unknown_fields)]
@@ -267,7 +267,7 @@ pub struct HybridTaskFootprint {
 }
 
 impl HybridTaskFootprint {
-    /// Build the Project Flow scheduling projection with stable path
+    /// Build the external scheduling projection with stable path
     /// normalization. This does not confer authority on the resulting paths.
     pub fn new(
         task_id: impl Into<String>,
@@ -983,7 +983,7 @@ mod tests {
     }
 
     #[test]
-    fn project_flow_footprint_normalizes_paths_and_requires_fresh_exact_state() {
+    fn scheduler_footprint_normalizes_paths_and_requires_fresh_exact_state() {
         let footprint = HybridTaskFootprint::new(
             "task-a",
             HybridFootprintSource::PlannerGuess,

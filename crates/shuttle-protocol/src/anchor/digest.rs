@@ -6,10 +6,9 @@
 //! **never recomputes** it — a digest handed down by external is copied byte-for-byte
 //! into the attempt/receipt chain.
 //!
-//! > 待与 upstream 正本核对: the authoritative pattern lives in
-//! > `upstream/collaboration-fabric/assets/schemas/*.schema.json`, which is not
-//! > materialized on this machine. This newtype encodes the ruling's stated
-//! > shape (`^sha256:[0-9a-f]{64}$`); reconcile on first upstream sync.
+//! > The authoritative pattern lives in the external orchestrator's schema set.
+//! > This newtype encodes the stated shape (`^sha256:[0-9a-f]{64}$`);
+//! > reconcile on upstream sync.
 
 use serde::{Deserialize, Serialize};
 

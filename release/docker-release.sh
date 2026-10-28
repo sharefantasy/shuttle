@@ -6,7 +6,7 @@ mode="${1:?usage: docker-release.sh <push|load> <base-image>}"
 image="${2:?usage: docker-release.sh <push|load> <base-image>}"
 version="$(python3 release/release_version.py --tag "${RELEASE_TAG:?RELEASE_TAG is required}")"
 source_commit="${SOURCE_COMMIT:?SOURCE_COMMIT is required}"
-source_url="${SOURCE_URL:-https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle}"
+source_url="${SOURCE_URL:-https://github.com/sharefantasy/shuttle}"
 
 tags_for() {
   python3 release/container_release.py tags \

@@ -23,7 +23,7 @@ fn tools_doctor_json_is_deterministic_and_secret_free_in_legacy_mode() {
     );
     assert_eq!(first.stdout, second.stdout);
     let value: serde_json::Value = serde_json::from_slice(&first.stdout).unwrap();
-    assert_eq!(value["schema_version"], "ea_tools_doctor/v1");
+    assert_eq!(value["schema_version"], "shuttle_tools_doctor/v1");
     assert_eq!(value["mode"], "legacy");
     assert!(!String::from_utf8(first.stdout)
         .unwrap()

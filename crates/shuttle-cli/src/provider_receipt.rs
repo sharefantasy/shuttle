@@ -118,7 +118,7 @@ pub fn land_result_artifact(
         .collect();
     let path = dir.join(format!("{safe}.telemetry.json"));
     let body = serde_json::to_string_pretty(&serde_json::json!({
-        "schema_version": "ea_cell_result_evidence/v1",
+        "schema_version": "shuttle_cell_result_evidence/v1",
         "provider_run_id": run_id,
         "runtime_descriptor_ref": binding.and_then(|b| b.runtime_descriptor_ref.as_deref()),
         "runtime_descriptor_digest": binding.and_then(|b| b.runtime_descriptor_digest.as_ref()).map(ToString::to_string),

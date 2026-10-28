@@ -15,8 +15,8 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use std::thread;
 use std::time::{Duration, Instant, SystemTime, UNIX_EPOCH};
 
-pub const CF_FACADE_REQUEST_SCHEMA: &str = "goal_control_facade_request/v1";
-pub const CF_FACADE_RESPONSE_SCHEMA: &str = "goal_control_facade_response/v1";
+pub const EXTERNAL_FACADE_REQUEST_SCHEMA: &str = "goal_control_facade_request/v1";
+pub const EXTERNAL_FACADE_RESPONSE_SCHEMA: &str = "goal_control_facade_response/v1";
 pub const DEFAULT_CF_TIMEOUT: Duration = Duration::from_secs(10);
 pub const DEFAULT_CF_REQUEST_LIMIT: usize = 1024 * 1024;
 pub const DEFAULT_CF_RESPONSE_LIMIT: usize = 1024 * 1024;
@@ -222,7 +222,7 @@ impl ExternalGoalClient {
         request_id: String,
     ) -> Result<ExternalFacadeResponse, GoalError> {
         let request = ExternalFacadeRequest {
-            schema_version: CF_FACADE_REQUEST_SCHEMA.into(),
+            schema_version: EXTERNAL_FACADE_REQUEST_SCHEMA.into(),
             request_id: request_id.clone(),
             operation,
             backend_instance_id: self.backend_instance_id.clone(),
@@ -368,10 +368,10 @@ impl ExternalGoalClient {
                     "backend facade returned malformed JSON envelope: {error}"
                 ))
             })?;
-        if response.schema_version() != CF_FACADE_RESPONSE_SCHEMA {
+        if response.schema_version() != EXTERNAL_FACADE_RESPONSE_SCHEMA {
             return Err(GoalError::UnsupportedContract(format!(
                 "expected {}, received {}",
-                CF_FACADE_RESPONSE_SCHEMA,
+                EXTERNAL_FACADE_RESPONSE_SCHEMA,
                 response.schema_version()
             )));
         }
@@ -480,7 +480,7 @@ mod tests {
 
     #[test]
     fn result_round_trip_uses_exact_operation_and_allows_bounded_stderr() {
-        let response = result_envelope(CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
+        let response = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
         let script = format!(
             "read request\ncase \"$request\" in *'\"operation\":\"get\"'*) ;; *) exit 19 ;; esac\nprintf '%s\\n' '{}'\nprintf 'diagnostic noise\\n' >&2",
             response.replace('\'', "'\\''")
@@ -502,7 +502,7 @@ mod tests {
     fn conflict_and_error_are_preserved_for_the_caller() {
         let conflict = format!(
             r#"{{"schema_version":"{}","request_id":"{}","outcome":"conflict","current_revisions":{{"goal":7,"attachment":null,"action":null}},"conflict":{{"reason_code":"revision_conflict","message":"stale"}},"retry":{{"retryable":true,"after_ms":5}}}}"#,
-            CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID
+            EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID
         );
         let (_dir, path) = fake(&format!("read request\nprintf '%s\\n' '{}'", conflict));
         let response = client(&path)
@@ -514,7 +514,7 @@ mod tests {
 
         let error = format!(
             r#"{{"schema_version":"{}","request_id":"{}","outcome":"error","current_revisions":{{"goal":null,"attachment":null,"action":null}},"error":{{"reason_code":"backend_unavailable","message":"offline"}},"retry":{{"retryable":true,"after_ms":100}}}}"#,
-            CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID
+            EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID
         );
         let (_dir, path) = fake(&format!(
             "read request\nprintf '%s\\n' '{}'\nexit 75",
@@ -558,7 +558,7 @@ mod tests {
 
     #[test]
     fn descendant_cannot_hold_response_pipes_open_after_facade_exit() {
-        let response = result_envelope(CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
+        let response = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
         let (_dir, path) = fake(&format!(
             "read request\n(sleep 5) &\nprintf '%s\\n' '{}'",
             response
@@ -583,7 +583,7 @@ mod tests {
         );
         assert!(matches!(response, Err(GoalError::UnsupportedContract(_))));
 
-        let mismatch = result_envelope(CF_FACADE_RESPONSE_SCHEMA, "some-other-request");
+        let mismatch = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, "some-other-request");
         let (_dir, path) = fake(&format!("read request\nprintf '%s\\n' '{}'", mismatch));
         let response = client(&path).call_with_request_id(
             ExternalOperation::Get,
@@ -592,7 +592,7 @@ mod tests {
         );
         assert!(matches!(response, Err(GoalError::ProtocolViolation(_))));
 
-        let valid = result_envelope(CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
+        let valid = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
         let (_dir, path) = fake(&format!("read request\nprintf '%s\\n' '{}'", valid));
         let response = client(&path)
             .with_limits(DEFAULT_CF_REQUEST_LIMIT, 32, DEFAULT_CF_STDERR_LIMIT)
@@ -636,7 +636,7 @@ mod tests {
 
     #[test]
     fn every_v1_operation_round_trips_through_the_facade() {
-        let response = result_envelope(CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
+        let response = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
         let (_dir, path) = fake(&format!("read request\nprintf '%s\\n' '{}'", response));
         let client = client(&path);
         for operation in [
@@ -666,7 +666,7 @@ mod tests {
     fn explicit_request_id_is_reused_verbatim_across_retries() {
         let dir = tempfile::tempdir().unwrap();
         let capture = dir.path().join("request-ids.txt");
-        let response = result_envelope(CF_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
+        let response = result_envelope(EXTERNAL_FACADE_RESPONSE_SCHEMA, REQUEST_ID);
         let (_guard, path) = fake(&format!(
             "read request\nprintf '%s\\n' \"$request\" >> '{}'\nprintf '%s\\n' '{}'",
             capture.display(),

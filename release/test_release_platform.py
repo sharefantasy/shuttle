@@ -306,6 +306,9 @@ class ReleasePlatformTests(unittest.TestCase):
             validate_upload_url(client, "https://user:password@api.github.com/upload")
 
     def test_dry_run_does_not_need_a_token_or_network(self) -> None:
+        from release_version import workspace_version
+
+        tag = f"v{workspace_version(REPO_ROOT / 'Cargo.toml')}"
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             dist = root / "dist"
@@ -316,7 +319,7 @@ class ReleasePlatformTests(unittest.TestCase):
             (dist / "release-manifest.json").write_text(
                 json.dumps(
                     {
-                        "tag": "v0.2.0",
+                        "tag": tag,
                         "source_commit": "abc123",
                         "assets": [{"name": "asset.bin"}],
                     }
@@ -340,7 +343,7 @@ class ReleasePlatformTests(unittest.TestCase):
                     "--token-env",
                     "MISSING_RELEASE_TOKEN",
                     "--tag",
-                    "v0.2.0",
+                    tag,
                     "--commit",
                     "abc123",
                     "--title",

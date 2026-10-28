@@ -6,10 +6,10 @@ import { join, isAbsolute } from "node:path";
 import { tmpdir } from "node:os";
 import { createHash } from "node:crypto";
 
-const SYMBOL_FOOTPRINT_SCHEMA = "ea_symbol_footprint/v1";
-const HYBRID_PARALLEL_ADVICE_SCHEMA = "ea_goal_parallel_advice/v2";
-const HYBRID_DAG_POLICY_VERSION = "ea_hybrid_dag_policy/v1";
-const PARALLEL_ADVICE_V1_SCHEMA = "ea_goal_parallel_advice/v1";
+const SYMBOL_FOOTPRINT_SCHEMA = "shuttle_symbol_footprint/v1";
+const HYBRID_PARALLEL_ADVICE_SCHEMA = "shuttle_goal_parallel_advice/v2";
+const HYBRID_DAG_POLICY_VERSION = "shuttle_hybrid_dag_policy/v1";
+const PARALLEL_ADVICE_V1_SCHEMA = "shuttle_goal_parallel_advice/v1";
 const DIGEST_RE = /^sha256:[0-9a-f]{64}$/;
 const OID_RE = /^(?:[0-9a-f]{40}|[0-9a-f]{64})$/;
 const AUTHORITY_KEYS = new Set(["approval", "claim", "credential", "dispatch", "fencing_token", "land", "push", "workspace", "write_scope"]);
@@ -792,7 +792,7 @@ export default function (pi: ExtensionAPI) {
     }),
     async execute(_toolCallId, params, _signal, _onUpdate, _ctx) {
       const proposal = {
-        schema_version: "ea_goal_action_proposal/v1",
+        schema_version: "shuttle_goal_action_proposal/v1",
         goal_ref: params.goal_ref,
         action_id: params.action_id,
         intent: params.intent,
@@ -1395,12 +1395,12 @@ export default function (pi: ExtensionAPI) {
     label: "Produce SHUTTLE parallel advice",
     description:
       "Produce read-only SHUTTLE parallel advice from a plan. v2 requires a closed canonical " +
-      "ea_symbol_footprint/v1 object and returns the closed ea_goal_parallel_advice/v2 object; " +
+      "shuttle_symbol_footprint/v1 object and returns the closed shuttle_goal_parallel_advice/v2 object; " +
       "v1 is explicit compatibility and remains planner_guess. This tool grants no path, " +
       "workspace, dispatch, land, push, claim or approval authority.",
     parameters: Type.Object({
       plan: Type.String({ description: "Path to the intent JSON plan." }),
-      symbol_footprint: Type.Optional(Type.Any({ description: "Closed canonical ea_symbol_footprint/v1 object. Selects v2 under auto; required for explicit v2 and forbidden for explicit v1." })),
+      symbol_footprint: Type.Optional(Type.Any({ description: "Closed canonical shuttle_symbol_footprint/v1 object. Selects v2 under auto; required for explicit v2 and forbidden for explicit v1." })),
       advice_version: Type.Optional(Type.Union([Type.Literal("auto"), Type.Literal("v1"), Type.Literal("v2")], { description: "Advice wire version. Default auto selects v2 with symbol_footprint, otherwise v1." })),
       root: Type.Optional(Type.String({ description: "Repo root (default cwd)." })),
       shuttle_bin: Type.Optional(Type.String({ description: "Path to the shuttle binary." })),

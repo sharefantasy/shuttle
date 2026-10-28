@@ -12,7 +12,7 @@ use std::path::{Component, Path, PathBuf};
 use std::process::{Command, Stdio};
 use std::time::{Duration, Instant};
 
-pub const MANIFEST_SCHEMA: &str = "ea_external_tools_bundle/v1";
+pub const MANIFEST_SCHEMA: &str = "shuttle_external_tools_bundle/v1";
 pub const RUNTIME_ABI: &str = "shuttle-runtime/v1";
 const PROBE_TIMEOUT: Duration = Duration::from_secs(10);
 
@@ -496,7 +496,7 @@ impl ToolResolver {
         }
         issues.sort();
         DoctorReport {
-            schema_version: "ea_tools_doctor/v1",
+            schema_version: "shuttle_tools_doctor/v1",
             mode: self.config.mode,
             status: if issues.is_empty() { "ok" } else { "error" },
             bundle_root: self

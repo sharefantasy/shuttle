@@ -39,32 +39,7 @@ def main() -> int:
             r"release/publish-release\.sh github",
         ],
     )
-    require(
-        ".gitea/workflows/release.yml",
-        [
-            r'tags:\s*\n\s*- "v\*\.\*\.\*"',
-            r"release/mirror-release\.sh gitea",
-            r"test_external_tools_release\.py",
-            r"GITEA_RELEASE_TOKEN",
-            r"GITEA_CONTAINER_PASSWORD",
-        ],
-    )
-    require(
-        ".workflow/release.yml",
-        [
-            r"^version: '1\.0'$",
-            r"step: build@nodejs",
-            r"release/mirror-release\.sh gitee",
-            r"test_external_tools_release\.py",
-            r"validate_workflows\.py",
-            r"test -n.*RELEASE_TAG.*SOURCE_COMMIT",
-        ],
-    )
-    for workflow in (
-        ".github/workflows/release.yml",
-        ".gitea/workflows/release.yml",
-        ".workflow/release.yml",
-    ):
+    for workflow in (".github/workflows/release.yml",):
         forbid(
             workflow,
             [
@@ -137,13 +112,13 @@ def main() -> int:
     require(
         "release/external-tools-contract.json",
         [
-            r'"schema_version": "ea_external_tools_build_contract/v1"',
+            r'"schema_version": "shuttle_external_tools_build_contract/v1"',
             r'"cell-supervisor"',
             r'"source-analysis"',
             r'"docker", "container-use", "node", "pi"',
         ],
     )
-    print("validated release workflow contracts: github, gitea, gitee, docker")
+    print("validated release workflow contracts: github, docker")
     return 0
 
 

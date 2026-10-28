@@ -28,7 +28,7 @@ ARG CORE_COMPONENT_DIGEST
 ARG TOOLS_COMPONENT_DIGEST
 ARG VERSION=dev
 ARG VCS_REF=unknown
-ARG SOURCE_URL=https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle
+ARG SOURCE_URL=https://github.com/sharefantasy/shuttle
 ENV HOME=/home/shuttle \
     PATH=/opt/shuttle-tools/bin:/usr/local/bin:/usr/bin:/bin \
     GIT_EXEC_PATH=/opt/shuttle-tools/libexec/git-core \

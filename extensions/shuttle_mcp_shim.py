@@ -23,10 +23,10 @@ PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "shuttle-fastpath"
 SERVER_VERSION = "0.1.0"
 MAXBUF = 32 * 1024 * 1024
-SYMBOL_FOOTPRINT_SCHEMA = "ea_symbol_footprint/v1"
-HYBRID_PARALLEL_ADVICE_SCHEMA = "ea_goal_parallel_advice/v2"
-HYBRID_DAG_POLICY_VERSION = "ea_hybrid_dag_policy/v1"
-PARALLEL_ADVICE_V1_SCHEMA = "ea_goal_parallel_advice/v1"
+SYMBOL_FOOTPRINT_SCHEMA = "shuttle_symbol_footprint/v1"
+HYBRID_PARALLEL_ADVICE_SCHEMA = "shuttle_goal_parallel_advice/v2"
+HYBRID_DAG_POLICY_VERSION = "shuttle_hybrid_dag_policy/v1"
+PARALLEL_ADVICE_V1_SCHEMA = "shuttle_goal_parallel_advice/v1"
 _DIGEST_RE = re.compile(r"sha256:[0-9a-f]{64}\Z")
 _OID_RE = re.compile(r"(?:[0-9a-f]{40}|[0-9a-f]{64})\Z")
 _AUTHORITY_KEYS = frozenset(
@@ -1193,7 +1193,7 @@ TOOLS = [
                 "plan": {"type": "string", "description": "Path to an intent JSON plan."},
                 "symbol_footprint": {
                     "type": "object",
-                    "description": "Closed canonical ea_symbol_footprint/v1 object. Selects v2 under auto; required for explicit v2 and forbidden for explicit v1.",
+                    "description": "Closed canonical shuttle_symbol_footprint/v1 object. Selects v2 under auto; required for explicit v2 and forbidden for explicit v1.",
                 },
                 "advice_version": {"type": "string", "enum": ["auto", "v1", "v2"], "description": "Default auto selects v2 when symbol_footprint is present, otherwise v1."},
                 "root": {"type": "string"},

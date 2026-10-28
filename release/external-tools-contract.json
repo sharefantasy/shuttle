@@ -1,5 +1,5 @@
 {
-  "schema_version": "ea_external_tools_build_contract/v1",
+  "schema_version": "shuttle_external_tools_build_contract/v1",
   "bundle_id": "shuttle-tools",
   "runtime_abis": ["shuttle-runtime/v1"],
   "platform": {"os": "linux", "libc": "glibc"},

@@ -9,6 +9,10 @@ Cargo.lock.orig
 .idea/
 .vscode/
 
+# Python
+__pycache__/
+*.pyc
+
 # Local scratch
 /tmp/
 *.log
@@ -16,68 +20,20 @@ Cargo.lock.orig
 *.bak.*
 *.bak-*
 *.bak_*
+*.b64
 .shuttletmp/
-eval/.w5_scratch/
-eval/.awake_watch.log
+.shuttletmp_*
+.tmp/
 
-# remote dispatch secrets — never commit
+# deploy secrets — never commit
 deploy/.remote.env
 deploy/state/
 
-# eval scratch fragments
-eval/.shuttletmp_*
-
-# shuttle run-scoped cache (plugin ①): keyed by git HEAD+dirty sig, never committed
+# shuttle run-scoped cache: keyed by git HEAD+dirty sig, never committed
 .shuttle/cache/
-
-# --- split-eval generation intermediates (keep task specs + reports only) ---
-__pycache__/
-*.pyc
-# splitter agent run logs (transcripts are scratch, not test data)
-eval/cases/*_split_b/splitter*.log
-# superseded / archived split rounds (only current produced/tasks is test data)
-eval/cases/*_split_b/produced*/tasks_prev_*/
-eval/cases/*_split_b/produced*/tasks_r1_*/
-# run-scoped self-report sidecars regenerated on every execution
-.self_reports/
-# root-level scratch (b64 splices, one-off patch scripts, smoke stderr)
-.shuttletmp_*
-*.b64
-patch[0-9]*.py
-*.rm_smoke.err
-
-# relay-trace sync scratch log
-eval/profiles/.relay_trace_sync.log
-
-# root-level scratch: smoke outputs, encode/decode temp, one-off patch scripts, hex dumps
-/*.b64
-/*_smoke.err
-/*_smoke.out
-/*_smoke*.telemetry.json
-/c4_*.txt
-/c4a.txt
-/c4r1.txt
-/chunk*.txt
-/dec_*.txt
-/rhex_*.txt
-/patch_*.py
-/fix_homoglyph.py
-/write_dec.py
-/run.rs.b64
-/.scan_probe.txt
-/.lsp_write.py
 .shuttle/symbols.cache
 .shuttle/*.cache
-/dist/
-
-# transient experiment residue (jj/cf formulae + harness scratch)
-/eval/tmp_formulae/
-/eval/tmp_harness/
-.tmp/
 **/.shuttle/
 
-# B-line spike / cell-run local execution artifacts (never commit run data)
-/eval/runs/
-
-# B-line spike local transfer/scratch dir (patches, base64 chunks, probe outputs, run scratch)
-/eval/.blinetmp/
+# release output
+/dist/

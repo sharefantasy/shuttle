@@ -148,7 +148,7 @@ pub struct DerivePlan {
 // ---------------------------------------------------------------------------
 
 /// Stable policy identifier bound into every Hybrid advice artifact.
-pub const HYBRID_DAG_POLICY_VERSION: &str = "ea_hybrid_dag_policy/v1";
+pub const HYBRID_DAG_POLICY_VERSION: &str = "shuttle_hybrid_dag_policy/v1";
 
 /// A task dependency edge: `from` is the prerequisite/provider and `to` is
 /// the dependent/consumer.

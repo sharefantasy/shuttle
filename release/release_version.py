@@ -35,7 +35,7 @@ def validate_tag(version: str, tag: str) -> None:
 
 def release_config(path: Path = Path("release/release-config.json")) -> dict[str, Any]:
     config = json.loads(path.read_text(encoding="utf-8"))
-    if config.get("schema_version") != "ea_release_config/v1":
+    if config.get("schema_version") != "shuttle_release_config/v1":
         raise ValueError("unsupported release config schema")
     return config
 

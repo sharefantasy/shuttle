@@ -1103,7 +1103,7 @@ fn emit_orchestration_audit(
     };
     let path = dir.join(format!("{safe}.audit.json"));
     let audit = serde_json::json!({
-        "schema": "ea_orchestration_audit/v1",
+        "schema": "shuttle_orchestration_audit/v1",
         "op": task.op,
         "escalated": result.escalated,
         "exhausted": result.exhausted,
@@ -1340,7 +1340,7 @@ mod tests {
         let digest = |ch: char| format!("sha256:{}", ch.to_string().repeat(64));
         let project_digest = digest('2');
         let mut approval = serde_json::json!({
-            "schema_version": "ea_external_project_approval/v1",
+            "schema_version": "shuttle_external_project_approval/v1",
             "decision": "approved",
             "external_commit_oid": "a".repeat(40),
             "provider_capability_snapshot_ref": "capability://one",

@@ -15,11 +15,11 @@
 //! boundary; the direct-agent-launch path (a hand-written `cell_binding.json`)
 //! does not use it at all.
 //!
-//! > 待与 upstream 正本核对: the frozen JSON Schemas for the three carried
-//! > contracts live in `upstream/collaboration-fabric/assets/schemas/*.schema.json`
-//! > and are NOT materialized on this machine. The carried structs are the
-//! > reference-form anchors in [`super::contracts`]; reconcile them on first
-//! > upstream sync (§7「绝不瞎猜」). This wrapper adds no new external fields — it only
+//! > The frozen JSON Schemas for the three carried
+//! > contracts live in the external orchestrator's schema set
+//! > and are not materialized in this crate. The carried structs are the
+//! > reference-form anchors in [`super::contracts`]; reconcile them on
+//! > upstream sync. This wrapper adds no new external fields — it only
 //! > transports the existing anchors — so it introduces no fresh guesswork.
 
 use serde::{Deserialize, Serialize};
@@ -96,7 +96,7 @@ pub struct ExternalLaunchBundle {
     #[serde(default)]
     pub prompt: Option<String>,
 
-    /// Opt-in Coding Flow artifact coordinates. Absent preserves the legacy
+    /// Opt-in coding-flow artifact coordinates. Absent preserves the legacy
     /// telemetry-only result_ref behavior.
     #[serde(default)]
     pub coding_result_export: Option<CodingResultExport>,
@@ -492,7 +492,7 @@ mod tests {
 
     fn approved_external_inputs(project_binding_digest: Sha256Digest) -> ApprovedExternalInputs {
         let mut approval = ApprovedExternalInputs {
-            schema_version: "ea_external_project_approval/v1".into(),
+            schema_version: "shuttle_external_project_approval/v1".into(),
             decision: "approved".into(),
             approval_ref: "approval://shuttle-project-a".into(),
             approval_digest: digest('0'),

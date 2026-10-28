@@ -74,10 +74,10 @@ pub struct StoreArgs {
     state_dir: Option<PathBuf>,
     /// Absolute path to the governed one-shot goal-control facade.
     #[arg(long)]
-    cf_facade: Option<PathBuf>,
+    external_facade: Option<PathBuf>,
     /// Per-request facade deadline.
     #[arg(long, default_value_t = 10_000)]
-    cf_timeout_ms: u64,
+    external_timeout_ms: u64,
     #[arg(long)]
     json: bool,
 }
@@ -837,12 +837,12 @@ fn selected_backend(args: &StoreArgs, goal_ref: Option<&str>) -> Result<GoalBack
 
 fn cf_client(args: &StoreArgs, goal_ref: Option<&str>) -> Result<ExternalGoalClient, GoalError> {
     let facade = args
-        .cf_facade
+        .external_facade
         .clone()
-        .or_else(|| std::env::var_os("SHUTTLE_GOAL_CF_FACADE").map(PathBuf::from))
+        .or_else(|| std::env::var_os("SHUTTLE_GOAL_EXTERNAL_FACADE").map(PathBuf::from))
         .ok_or_else(|| {
             GoalError::BackendUnavailable(
-                "external backend selected but --cf-facade/SHUTTLE_GOAL_CF_FACADE is not configured"
+                "external backend selected but --external-facade/SHUTTLE_GOAL_EXTERNAL_FACADE is not configured"
                     .into(),
             )
         })?;
@@ -851,7 +851,7 @@ fn cf_client(args: &StoreArgs, goal_ref: Option<&str>) -> Result<ExternalGoalCli
         None => args.store_id.clone(),
     };
     ExternalGoalClient::new(facade, &instance_id)?
-        .with_timeout(Duration::from_millis(args.cf_timeout_ms))
+        .with_timeout(Duration::from_millis(args.external_timeout_ms))
 }
 
 fn call_cf(

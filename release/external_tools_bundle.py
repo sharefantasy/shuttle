@@ -18,8 +18,8 @@ from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.request import urlopen
 
-SCHEMA = "ea_external_tools_bundle/v1"
-CONTRACT_SCHEMA = "ea_external_tools_build_contract/v1"
+SCHEMA = "shuttle_external_tools_bundle/v1"
+CONTRACT_SCHEMA = "shuttle_external_tools_build_contract/v1"
 REQUIRED_TOOLS = {"git", "rg", "ctags", "tar", "ps"}
 FORBIDDEN_NAMES = {"docker", "container-use", "node", "pi"}
 ARCHES = {"amd64": "x86_64", "arm64": "aarch64"}

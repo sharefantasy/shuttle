@@ -89,7 +89,7 @@ def assemble_receipt(
         "tools": images["tools"]["digest"],
     }
     receipt = {
-        "schema_version": "ea_container_images_receipt/v1",
+        "schema_version": "shuttle_container_images_receipt/v1",
         "version": version,
         "source_commit": source_commit,
         "platforms": config["docker"]["platforms"],
@@ -108,7 +108,7 @@ def validate_receipt(
         "source_commit",
         "platforms",
         "images",
-    } or receipt.get("schema_version") != "ea_container_images_receipt/v1":
+    } or receipt.get("schema_version") != "shuttle_container_images_receipt/v1":
         raise ValueError("container images receipt schema drifted")
     if receipt.get("version") != version or receipt.get("source_commit") != source_commit:
         raise ValueError("container images receipt coordinates drifted")
@@ -167,7 +167,7 @@ def validate_size(
     if measured_bytes <= budget:
         return "within-budget"
     exceptions = json.loads(exception_path.read_text(encoding="utf-8"))
-    if exceptions.get("schema_version") != "ea_container_size_exceptions/v1":
+    if exceptions.get("schema_version") != "shuttle_container_size_exceptions/v1":
         raise ValueError("unsupported size exception schema")
     exact = [
         item

@@ -91,7 +91,7 @@ class ExternalToolsReleaseTests(unittest.TestCase):
         ).encode()
         (root / "checksums.sha256").write_bytes(checksums)
         manifest = {
-            "schema_version": "ea_external_tools_bundle/v1",
+            "schema_version": "shuttle_external_tools_bundle/v1",
             "bundle_id": "shuttle-tools",
             "bundle_version": "0.2.0",
             "platform": {"os": "linux", "arch": "x86_64", "libc": "glibc"},
@@ -355,7 +355,7 @@ mod tests {
         with tempfile.TemporaryDirectory() as tmp:
             exceptions = Path(tmp) / "exceptions.json"
             exceptions.write_text(
-                json.dumps({"schema_version": "ea_container_size_exceptions/v1", "exceptions": []}),
+                json.dumps({"schema_version": "shuttle_container_size_exceptions/v1", "exceptions": []}),
                 encoding="utf-8",
             )
             self.assertEqual(
@@ -367,7 +367,7 @@ mod tests {
             exceptions.write_text(
                 json.dumps(
                     {
-                        "schema_version": "ea_container_size_exceptions/v1",
+                        "schema_version": "shuttle_container_size_exceptions/v1",
                         "exceptions": [
                             {
                                 "variant": "core",

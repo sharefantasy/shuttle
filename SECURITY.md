@@ -20,10 +20,8 @@ Security fixes land on the latest `0.3.x` release.
 `Security` tab and choose *Report a vulnerability*. The report stays private and
 gives us a shared timeline.
 
-**Backup: email** `<security-contact>`.
-Replace this placeholder with a monitored mailbox before publishing the
-repository; GitHub private reporting alone is sufficient if you prefer not to
-publish an address.
+GitHub private vulnerability reporting is the only reporting channel; no
+public mailbox is published.
 
 Please do **not** open a public issue, pull request, or discussion for a
 suspected vulnerability.

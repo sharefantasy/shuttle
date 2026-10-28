@@ -754,7 +754,7 @@ enum Cmd {
         #[arg(long = "run-id")]
         run_id: String,
     },
-    /// Return the immutable ea_usage_receipt/v1 for one terminal cell run.
+    /// Return the immutable shuttle_usage_receipt/v1 for one terminal cell run.
     CellUsage {
         #[arg(long = "run-id")]
         run_id: String,

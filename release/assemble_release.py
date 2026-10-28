@@ -255,7 +255,7 @@ def main() -> int:
         image_path.write_text(
             json.dumps(
                 {
-                    "schema_version": "ea_container_image_receipt/v1",
+                    "schema_version": "shuttle_container_image_receipt/v1",
                     "version": version,
                     "tag": args.tag,
                     "source_commit": args.source_commit,
@@ -273,7 +273,7 @@ def main() -> int:
         encoding="utf-8",
     )
     manifest = {
-        "schema_version": "ea_release_manifest/v1",
+        "schema_version": "shuttle_release_manifest/v1",
         "version": version,
         "tag": args.tag,
         "source_commit": args.source_commit,

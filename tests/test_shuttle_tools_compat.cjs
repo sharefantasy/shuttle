@@ -35,7 +35,7 @@ function footprint(source = "planner_declared_validated") {
   };
   const symbol = { symbol_id: digest(identity), ...identity };
   return {
-    schema_version: "ea_symbol_footprint/v1",
+    schema_version: "shuttle_symbol_footprint/v1",
     basis: {
       repositories: [{ repo_id: "repo:shuttle", base_oid: "a".repeat(40) }],
       symbol_index_ref: "artifact://symbol-index", symbol_index_digest: "sha256:" + "c".repeat(64),
@@ -81,7 +81,7 @@ function footprint(source = "planner_declared_validated") {
     shuttle_bin: fakeEa, root: ".", plan: "intent.json", symbol_footprint: canonical,
   });
   assert.equal(result.isError, undefined, JSON.stringify(result));
-  assert.equal(result.details.advice.schema_version, "ea_goal_parallel_advice/v2");
+  assert.equal(result.details.advice.schema_version, "shuttle_goal_parallel_advice/v2");
   assert.equal(result.details.selected_advice_version, "v2");
   assert.equal(result.details.read_only, true);
   assert.equal(result.details.authority, "none");
@@ -90,7 +90,7 @@ function footprint(source = "planner_declared_validated") {
     shuttle_bin: fakeEa, root: ".", plan: "intent.json",
   });
   assert.equal(result.isError, undefined, JSON.stringify(result));
-  assert.equal(result.details.advice.schema_version, "ea_goal_parallel_advice/v1");
+  assert.equal(result.details.advice.schema_version, "shuttle_goal_parallel_advice/v1");
   assert.equal(result.details.selected_advice_version, "v1");
 
   const guessed = footprint("planner_guess");

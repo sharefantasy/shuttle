@@ -14,8 +14,8 @@ use shuttle_protocol::CellBinding;
 
 use crate::sha256;
 
-pub const RUN_RECORD_SCHEMA: &str = "ea_cell_run/v1";
-pub const RUN_EVENT_SCHEMA: &str = "ea_cell_runtime_event/v1";
+pub const RUN_RECORD_SCHEMA: &str = "shuttle_cell_run/v1";
+pub const RUN_EVENT_SCHEMA: &str = "shuttle_cell_runtime_event/v1";
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -825,7 +825,7 @@ pub fn doctor(registry: &CellRegistry) -> DoctorReport {
         issues.push("container_use_unavailable".into());
     }
     DoctorReport {
-        schema_version: "ea_cell_doctor/v1",
+        schema_version: "shuttle_cell_doctor/v1",
         status: if issues.is_empty() {
             "ready"
         } else {

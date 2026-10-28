@@ -33,7 +33,7 @@ def main() -> int:
     validate_tag(version, args.tag)
     dist = args.dist.resolve(strict=True)
     manifest = json.loads((dist / "release-manifest.json").read_text(encoding="utf-8"))
-    if manifest.get("schema_version") != "ea_release_manifest/v1":
+    if manifest.get("schema_version") != "shuttle_release_manifest/v1":
         raise ValueError("unsupported release manifest")
     if manifest.get("version") != version or manifest.get("tag") != args.tag:
         raise ValueError("release manifest version coordinates drifted")
@@ -65,7 +65,7 @@ def main() -> int:
                 (dist / "container-image.json").read_text(encoding="utf-8")
             )
             expected_receipt = {
-                "schema_version": "ea_container_image_receipt/v1",
+                "schema_version": "shuttle_container_image_receipt/v1",
                 "version": version,
                 "tag": args.tag,
                 "source_commit": source_commit,

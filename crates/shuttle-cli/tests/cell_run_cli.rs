@@ -112,7 +112,7 @@ impl StrictRuntimeFixture {
             },
         });
         let manifest = serde_json::json!({
-            "schema_version": "ea_external_tools_bundle/v1",
+            "schema_version": "shuttle_external_tools_bundle/v1",
             "bundle_id": "cell-run-provider-test",
             "bundle_version": "1.0.0",
             "platform": platform,
@@ -158,7 +158,7 @@ impl StrictRuntimeFixture {
         std::fs::write(&extension, "export const fixture = true;\n").unwrap();
         let bundle_digest = format!("sha256:{}", "b".repeat(64));
         let descriptor = serde_json::json!({
-            "schema_version": "ea_runtime_descriptor/v1",
+            "schema_version": "shuttle_runtime_descriptor/v1",
             "mode": "host_bundle",
             "core": {
                 "version": env!("CARGO_PKG_VERSION"),
@@ -254,7 +254,7 @@ impl StrictRuntimeFixture {
         let file_id = shuttle_protocol::sha256_hex(run_id.as_bytes());
         let events = self.state.join("events").join(format!("{file_id}.jsonl"));
         let record = serde_json::json!({
-            "schema_version": "ea_cell_run/v1",
+            "schema_version": "shuttle_cell_run/v1",
             "provider_run_id": run_id,
             "attempt_id": self.binding["attempt_id"],
             "state": "recoverable",
@@ -661,7 +661,7 @@ fn durable_lifecycle_observe_collect_and_terminal_replay() {
         String::from_utf8_lossy(&usage.stderr)
     );
     let usage: serde_json::Value = serde_json::from_slice(&usage.stdout).unwrap();
-    assert_eq!(usage["schema_version"], "ea_usage_receipt/v1");
+    assert_eq!(usage["schema_version"], "shuttle_usage_receipt/v1");
     assert_eq!(usage["provider_run_id"], "run/life:1");
     assert_eq!(usage["attempt_id"], "attempt-life");
     assert_eq!(usage["cohort_id"], "cohort-life");
@@ -1047,7 +1047,7 @@ fn doctor_is_machine_readable_and_never_emits_credentials() {
     let raw = String::from_utf8(output.stdout).unwrap();
     assert!(!raw.contains("do-not-print-this"));
     let report: serde_json::Value = serde_json::from_str(&raw).unwrap();
-    assert_eq!(report["schema_version"], "ea_cell_doctor/v1");
+    assert_eq!(report["schema_version"], "shuttle_cell_doctor/v1");
     assert_eq!(report["provider_credential_ref_present"], true);
     assert_eq!(report["credential_source_kind"], "environment");
     let _ = std::fs::remove_dir_all(&ws);

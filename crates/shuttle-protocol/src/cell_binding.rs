@@ -347,7 +347,7 @@ impl CellBinding {
     /// This is the second external-orchestrated construction path (alongside
     /// [`Self::from_external`], which lowers the agent-lifecycle contracts). It
     /// consumes the two frozen coding-flow schemas that carry an shuttle-consumable
-    /// run envelope — `project_flow_code_delivery_handoff/v1` and
+    /// run envelope — `shuttle_code_delivery_handoff/v1` and
     /// `coding_agent_context_manifest/v1` — and routes each field to its
     /// authoritative external source:
     ///   * `allowed_paths`     ← `context_manifest.allowed_write_scopes[].paths`
@@ -615,7 +615,9 @@ impl ApprovedExternalInputs {
     /// Verify that the approval digest commits to the exact external commit,
     /// provider capability snapshot and project binding consumed by the cell.
     fn validate(&self) -> Result<(), CellBindingError> {
-        if self.schema_version != "ea_external_project_approval/v1" || self.decision != "approved" {
+        if self.schema_version != "shuttle_external_project_approval/v1"
+            || self.decision != "approved"
+        {
             return Err(CellBindingError::InvalidProjectBinding(
                 "external inputs require an approved v1 approval".into(),
             ));
@@ -933,7 +935,7 @@ mod tests {
 
     fn handoff_with(scopes: Vec<WriteScope>) -> ProjectFlowCodeDeliveryHandoff {
         ProjectFlowCodeDeliveryHandoff {
-            schema_version: "project_flow_code_delivery_handoff/v1".into(),
+            schema_version: "shuttle_code_delivery_handoff/v1".into(),
             handoff_id: "ho-1".into(),
             program_id: "prog-1".into(),
             child_dag_id: "cd-1".into(),

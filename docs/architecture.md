@@ -123,31 +123,22 @@ aider 用 tree-sitter 抽取每个文件的**定义/引用标签**，构造符�
 
 ## 9. 与宿主 agent 集成
 
-> **方向已反转（v0.1）**：不再让宿主 agent 把 shuttle 当插件调用，而是 **shuttle 作为 supervisor 包裹 pi**，
-> pi 降级为 shuttle 内部一个可替换的 LLM 规划循环。详见 。
->
-> **增量索引探针（Spike）**：是否在 external 的 materialization/land 两端边界挂一个 SCIP 索引工位，把 context-pack 的文件级读写集升级为符号级、并机械生成 touch_hint，见 （加速层，非依赖层；索引缺席时退回 ctags）。
->
-> **系统分层(四层)**:shuttle 在 Project Flow / Coding Flow / Collaboration Fabric 之下的定位,以及"任务级切分 vs 落地层切分"的双层模型,见 。
->
-> **代码开发能力全貌**:external 各方案已落地 vs 未落地的边界(cell 契约/cell-run/ScopedPathResolver 悬置),以及当前瓶颈定位,见 。
+> **集成拓扑（v0.1）**：首选 **shuttle 作为 supervisor 包裹宿主 agent**（如 pi），
+> agent 降级为 shuttle 内部一个可替换的 LLM 规划循环；「agent 扩展 spawn `shuttle apply`」
+> 的插件拓扑作为兼容后端保留。
 
-- **pi（主路径，反转后）**：入口收敛到 `shuttle run`。shuttle 以子进程 supervisor 形态 spawn
+- **pi（主路径）**：入口收敛到 `shuttle run`。shuttle 以子进程 supervisor 形态 spawn
   `pi -p --mode json -e <shuttle 扩展>`，用 `--exclude-tools edit,write` 禁掉 pi 内建落盘，
   改由注入的 `apply_edit_plan` / `shuttle_locate` / `shuttle_symbols` / `shuttle_repomap` 走 shuttle 快路径。
-  规划仍是 pi 里那一个模型（shuttle 内不塞第二个 LLM）。旧的「pi 扩展 spawn `shuttle apply`」拓扑
-  作为兼容后端保留。
+  规划仍是 pi 里那一个模型（shuttle 内不塞第二个 LLM）。
 - **aider**：其编辑格式本就是 search/replace，可直接用 `shuttle apply` 替换其 apply 步骤;
   `shuttle repomap` 也可替换 aider 自带的 repo-map（同思路、增量缓存更快）。
 
 ### 9.1 运行时诊断与内存边界
 
 repo-map/context-pack 的“一次 ctags 扫描两用”不代表扫描可以无界。递归 root、ctags
-完整 stdout buffering、完整 SymbolTable/引用图驻留，以及未排除的 eval worktree 会共同
-放大单进程 RSS；PI JSON supervisor 也必须提供有界背压。2026-09-13 的 macOS watchdog
-panic 现场、证据等级、container-use/Herdr/宿主执行面归因边界、panic 读取通道和修复
-优先级见
-[`macos_watchdog_panic_investigation_20260913.md`](macos_watchdog_panic_investigation_20260913.md)。
+完整 stdout buffering、完整 SymbolTable/引用图驻留会共同放大单进程 RSS；supervisor
+形态下解析宿主 agent 的 JSON 事件流也必须提供有界背压。
 
 ## 10. 里程碑
 

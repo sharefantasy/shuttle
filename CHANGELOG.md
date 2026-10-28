@@ -92,6 +92,4 @@ earlier development history is not part of this repository.
   capabilities isolated behind a feature flag.
 - **`shuttle` CLI**: host-agent entry point wiring all capabilities together.
 
-[Unreleased]: https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle/compare/v0.2.0...HEAD
-[0.2.0]: https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle/releases/tag/v0.2.0
-[0.1.0]: https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle/releases/tag/v0.1.0
+[0.3.0]: https://github.com/sharefantasy/shuttle/releases/tag/v0.3.0

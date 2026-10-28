@@ -684,7 +684,8 @@ pub fn plan_rename(
 /// --show-toplevel`. `None` when git is absent or `root` is outside a work
 /// tree (then no narrow-scope warning is possible or needed).
 fn git_repo_root(root: &str) -> Option<String> {
-    let out = std::process::Command::new("git")
+    let git = shuttle_runtime_tools::resolve(shuttle_runtime_tools::ToolId::Git).ok()?;
+    let out = std::process::Command::new(git)
         .args(["-C", root, "rev-parse", "--show-toplevel"])
         .output()
         .ok()?;
