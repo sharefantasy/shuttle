@@ -1,0 +1,86 @@
+[workspace]
+resolver = "2"
+members = [
+    "crates/shuttle-protocol",
+    "crates/shuttle-locate",
+    "crates/shuttle-symbols",
+    "crates/shuttle-nav",
+    "crates/shuttle-refactor",
+    "crates/shuttle-editcore",
+    "crates/shuttle-codemod",
+    "crates/shuttle-conflict",
+    "crates/shuttle-cli",
+    "crates/shuttle-lsp-bridge",
+    "crates/shuttle-goal",
+    "crates/shuttle-runtime-tools",
+    "crates/shuttle-ui",
+]
+
+[workspace.package]
+version = "0.3.0"
+edition = "2021"
+rust-version = "1.90"
+license = "MIT"
+repository = "https://github.com/fankainang/shuttle"
+homepage = "https://github.com/fankainang/shuttle"
+description = "A latency-first execution kernel for coding agents: symbol-precise edits, navigation, refactors, and codemods for small fast models."
+keywords = ["coding-agent", "refactor", "ast-grep", "tree-sitter", "codemod"]
+categories = ["development-tools", "command-line-utilities"]
+authors = ["shuttle contributors"]
+
+# Shared dependency versions. Individual crates opt-in via `workspace = true`.
+[workspace.dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+anyhow = "1"
+thiserror = "2"
+clap = { version = "4", features = ["derive"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+libc = "0.2"
+sha2 = "0.10"
+# Diff / apply engines
+similar = { version = "2", features = ["inline", "unicode"] }
+imara-diff = "0.1"
+# Internal crates
+shuttle-protocol = { path = "crates/shuttle-protocol" }
+shuttle-locate = { path = "crates/shuttle-locate" }
+shuttle-symbols = { path = "crates/shuttle-symbols" }
+shuttle-nav = { path = "crates/shuttle-nav" }
+shuttle-refactor = { path = "crates/shuttle-refactor" }
+shuttle-lsp-bridge = { path = "crates/shuttle-lsp-bridge" }
+shuttle-editcore = { path = "crates/shuttle-editcore" }
+shuttle-codemod = { path = "crates/shuttle-codemod" }
+shuttle-conflict = { path = "crates/shuttle-conflict" }
+shuttle-goal = { path = "crates/shuttle-goal" }
+shuttle-runtime-tools = { path = "crates/shuttle-runtime-tools" }
+shuttle-ui = { path = "crates/shuttle-ui" }
+
+[workspace.lints.rust]
+# Centralised lint policy (H1). Every member opts in via `[lints] workspace = true`,
+# so the whole workspace shares one source of truth instead of per-crate
+# `#![deny(...)]` preambles that drift. The tree is warning-clean under this set.
+#
+# Hygiene: fully-qualified paths that a use-import already covers, redundant
+# import braces, and unit `let` bindings that hide a `()` return. All three are
+# warn-clean today and keep the surface tidy without touching semantics.
+unused_qualifications = "warn"
+unused_import_braces = "warn"
+unit_bindings = "warn"
+
+[workspace.lints.clippy]
+# Scaffolding guardrails: debugging / stub leftovers must never reach a commit.
+# These are zero-occurrence today and DENIED so a stray `dbg!()` / `todo!()` /
+# `unimplemented!()` fails the build rather than silently shipping in the
+# latency-critical hot path.
+dbg_macro = "deny"
+todo = "deny"
+unimplemented = "deny"
+
+[profile.release]
+# Latency-first: fat LTO + single codegen unit for the fastest hot path.
+opt-level = 3
+lto = "fat"
+codegen-units = 1
+panic = "abort"
+strip = true

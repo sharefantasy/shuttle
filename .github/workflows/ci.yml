@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  CARGO_TERM_COLOR: always
+  RUST_BACKTRACE: 1
+
+jobs:
+  # Fast, deterministic gates: formatting + lint. No external tools needed.
+  lint:
+    name: fmt + clippy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - name: Cache cargo registry + target
+        uses: Swatinem/rust-cache@v2
+      - name: rustfmt --check
+        run: cargo fmt --all -- --check
+      - name: clippy -D warnings
+        run: cargo clippy --workspace --all-targets -- -D warnings
+
+  release-contracts:
+    name: release workflow contracts
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install archive verifier
+        run: sudo apt-get update && sudo apt-get install -y zstd
+      - name: Validate release tooling and platform contracts
+        run: make release-test
+
+  # Build + test. Installs universal-ctags + ast-grep so the shell-out backed
+  # integration tests exercise the real ladder rather than the skip path.
+  test:
+    name: build + test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo registry + target
+        uses: Swatinem/rust-cache@v2
+      - name: Install universal-ctags
+        run: sudo apt-get update && sudo apt-get install -y universal-ctags
+      - name: Install ast-grep
+        run: cargo install ast-grep --locked
+      - name: cargo build --workspace
+        run: cargo build --workspace --all-targets
+      - name: cargo test --workspace
+        run: cargo test --workspace
+
+  # Cage acceptance gate: the cell cage MUST expose a POSITIVE tool allowlist
+  # (caged_tools) and render the lockdown flags, never a bash exclude-list.
+  # These named tests fail loudly if anyone reintroduces the exclude-list seam
+  # or drops --tools/--no-builtin-tools/--no-extensions.
+  cage-gate:
+    name: positive-allowlist cage gate
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+      - name: Cache cargo registry + target
+        uses: Swatinem/rust-cache@v2
+      - name: positive-allowlist cage gate
+        run: |
+          cargo test -p shuttle-cli -- cell_run::tests::caged_tools_is_positive_allowlist_bash_never_grantable
+          cargo test -p shuttle-cli -- cell_run::tests::build_caged_config_enforces_scope_env_and_supervisor_mode
+          cargo test -p shuttle-cli -- run::tests::positive_allowlist_renders_tools_and_lockdown_flags
+          cargo test -p shuttle-cli -- run::tests::empty_tools_and_lockdown_off_by_default

@@ -1,0 +1,15 @@
+[package]
+name = "shuttle-protocol"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Wire contracts for shuttle: edit plans, tool outcomes, routing, orchestration, and the cell-binding execution envelope."
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

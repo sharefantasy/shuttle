@@ -1,0 +1,7 @@
+id: js-var-to-let
+language: javascript
+severity: hint
+message: "prefer let over var"
+rule:
+  pattern: var $NAME = $INIT
+fix: let $NAME = $INIT

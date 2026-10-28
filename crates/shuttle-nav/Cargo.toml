@@ -1,0 +1,26 @@
+[package]
+name = "shuttle-nav"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Code navigation for shuttle: references, definitions, callers, implementations, rename, and change-impact analysis."
+
+[dependencies]
+shuttle-symbols.workspace = true
+shuttle-locate.workspace = true
+shuttle-protocol.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+shuttle-runtime-tools.workspace = true
+
+# shuttle-nav — the daemonless "specialized LSP" query layer (docs/shuttle_lsp_capability_plan.md §9).
+# The ONLY new engine position: it does not re-index. It composes shuttle-symbols'
+# SymbolTable (definitions), extract_references (candidate refs) and
+# genuine_identifier_lines/disambiguate_refs (AST disambiguation) into
+# references/rename/impls/callers/hover, and emits one unified NavHit model with
+# an explicit High/Medium/Low confidence per hit. No LSP protocol, no server.
+
+[lints]
+workspace = true

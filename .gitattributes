@@ -1,0 +1,8 @@
+# Line-ending pins — added for the Windows counterpart flow (2026-09-21).
+# Shell scripts and dockerfiles MUST stay LF: they are COPY'd into the Linux
+# eval image and bash chokes on CRLF. PowerShell is pinned CRLF per convention.
+# Scope is deliberately surgical (no repo-wide renormalization).
+*.sh   text eol=lf
+*.ps1  text eol=crlf
+eval/docker/Dockerfile            text eol=lf
+eval/docker/Dockerfile.dockerignore text eol=lf

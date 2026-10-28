@@ -1,0 +1,83 @@
+[package]
+name = "shuttle-refactor"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "AST-precise refactors for shuttle (extract/inline method, change-signature, move-function, and more) via tree-sitter."
+
+[dependencies]
+shuttle-protocol.workspace = true
+shuttle-nav.workspace = true
+shuttle-editcore.workspace = true
+shuttle-symbols.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+tree-sitter = "0.25"
+tree-sitter-python = "0.25"
+tree-sitter-javascript = "0.25"
+tree-sitter-go = "0.25"
+tree-sitter-rust = "0.24"
+tree-sitter-typescript = "0.23"
+streaming-iterator = "0.1"
+
+[features]
+# Optional TypeScript type-level enhancement (docs §2.2/§5/§6, batch 3): when
+# extract-method needs a TS return-type annotation that neither the nearest
+# declaration nor ctags supplied, shell out to `ts-morph` once (non-daemon,
+# use-and-exit) to fill the placeholder. NOT compiled by default — the
+# daemonless single-file hot path never pays for it.
+default = []
+ts-morph = []
+
+# shuttle-refactor — the daemonless tree-sitter locals refactor engine
+# (docs/shuttle_refactor_engine_treesitter_locals.md). It is the FIRST crate to pull
+# in native tree-sitter (§6.1): ast-grep's binary only exposes `kind` matching
+# and cannot run locals.scm scope/definition/reference resolution. This crate
+# owns the decision layer (params/returns/scope-conflict); it reuses
+# shuttle-protocol::EditOp as the write-out and shuttle-nav::Confidence for tagging.
+
+[[bench]]
+name = "extract_method_latency"
+harness = false
+
+[[bench]]
+name = "inline_method_latency"
+harness = false
+
+[[bench]]
+name = "change_signature_latency"
+harness = false
+
+[[bench]]
+name = "inline_parameter_latency"
+harness = false
+
+[[bench]]
+name = "remove_parameter_latency"
+harness = false
+
+[[bench]]
+name = "rename_symbol_latency"
+harness = false
+
+[[bench]]
+name = "introduce_parameter_latency"
+harness = false
+
+[[bench]]
+name = "move_function_latency"
+harness = false
+
+# Optional: only meaningful under `--features ts-morph` (else prints a skip line).
+[[bench]]
+name = "ts_morph_latency"
+harness = false
+
+[[bench]]
+name = "constant_latency"
+harness = false
+
+[lints]
+workspace = true

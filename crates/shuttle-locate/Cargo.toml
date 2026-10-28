@@ -1,0 +1,19 @@
+[package]
+name = "shuttle-locate"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "ripgrep / ast-grep locate wrappers for shuttle: fast identifier and pattern lookup."
+
+[dependencies]
+anyhow.workspace = true
+thiserror.workspace = true
+serde_json.workspace = true
+shuttle-runtime-tools.workspace = true
+
+# Locate layer wraps external fast tools. We shell out to `rg` / `ast-grep`
+# rather than re-implement them — they are already the fastest in class.
+
+[lints]
+workspace = true

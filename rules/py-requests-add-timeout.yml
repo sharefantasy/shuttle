@@ -1,0 +1,7 @@
+id: py-requests-add-timeout
+language: python
+severity: hint
+message: "requests.get without timeout — add a default timeout"
+rule:
+  pattern: requests.get($URL)
+fix: requests.get($URL, timeout=10)

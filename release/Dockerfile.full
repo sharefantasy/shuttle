@@ -1,0 +1,53 @@
+# syntax=docker/dockerfile:1.7
+
+# Release builds MUST pass immutable ref@sha256 coordinates produced earlier
+# in the same release. BuildKit selects the matching child manifest for each
+# target platform; the labels preserve the exact component indexes for audit.
+ARG CORE_IMAGE
+ARG TOOLS_IMAGE
+ARG CORE_COMPONENT_DIGEST=$CORE_IMAGE
+ARG TOOLS_COMPONENT_DIGEST=$TOOLS_IMAGE
+FROM ${CORE_IMAGE} AS core-component
+FROM ${TOOLS_IMAGE} AS tools-component
+
+FROM debian:bookworm-slim@sha256:88200866dfff7ea7f5cbcb6ec7c8a701889efe6fe859fe64d6990e4b07ea4171 AS compat-builder
+ARG DEBIAN_SNAPSHOT=20260824T000000Z
+RUN printf 'deb [check-valid-until=no] http://snapshot.debian.org/archive/debian/%s bookworm main\n' "$DEBIAN_SNAPSHOT" > /etc/apt/sources.list && \
+    rm -f /etc/apt/sources.list.d/debian.sources && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends 'ca-certificates=20230311+deb12u1' && \
+    mkdir -p /compat-root/bin /compat-root/etc/ssl/certs && \
+    install -m 0755 /bin/dash /compat-root/bin/dash && \
+    ln -s dash /compat-root/bin/sh && \
+    install -m 0644 /etc/ssl/certs/ca-certificates.crt /compat-root/etc/ssl/certs/ca-certificates.crt
+
+FROM scratch AS full
+ARG CORE_IMAGE
+ARG TOOLS_IMAGE
+ARG CORE_COMPONENT_DIGEST
+ARG TOOLS_COMPONENT_DIGEST
+ARG VERSION=dev
+ARG VCS_REF=unknown
+ARG SOURCE_URL=https://codeup.aliyun.com/67b894ecf6e36ba63f99da60/growth/shuttle
+ENV HOME=/home/shuttle \
+    PATH=/opt/shuttle-tools/bin:/usr/local/bin:/usr/bin:/bin \
+    GIT_EXEC_PATH=/opt/shuttle-tools/libexec/git-core \
+    GIT_TEMPLATE_DIR=/opt/shuttle-tools/share/git-core/templates
+LABEL org.opencontainers.image.title="shuttle" \
+      org.opencontainers.image.description="Shuttle with digest-bound external tools" \
+      org.opencontainers.image.source="${SOURCE_URL}" \
+      org.opencontainers.image.version="${VERSION}" \
+      org.opencontainers.image.revision="${VCS_REF}" \
+      org.opencontainers.image.licenses="MIT AND LicenseRef-Bundle-Notices" \
+      io.shuttle.core.image="${CORE_COMPONENT_DIGEST}" \
+      io.shuttle.tools.image="${TOOLS_COMPONENT_DIGEST}" \
+      io.shuttle.compatibility="debian-shell-ca-v1"
+COPY --from=core-component / /
+COPY --from=compat-builder /compat-root/ /
+COPY --from=tools-component /opt/shuttle-tools/ /opt/shuttle-tools/
+USER 65532:65532
+WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/shuttle"]
+CMD ["--help"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+  CMD ["/usr/local/bin/shuttle", "--version"]

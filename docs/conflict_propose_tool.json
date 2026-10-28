@@ -1,0 +1,51 @@
+{
+  "name": "conflict_propose",
+  "description": "Submit an LLM-arbitrated merge resolution for a specific conflict hunk. This is the ONLY conflict tool injected into pi; all other conflict operations are deterministic `shuttle conflict *` subcommands. Use this tool ONLY for L2 semantic hunks that auto3way could not resolve. The merged_text MUST NOT contain any conflict markers (<<<<<<<, =======, >>>>>>>). After calling this tool, shuttle supervisor will run verify + stage automatically.",
+  "input_schema": {
+    "type": "object",
+    "properties": {
+      "file": {
+        "type": "string",
+        "description": "Repo-relative path of the conflicted file (e.g. 'src/main.rs'). Must match a file returned by `shuttle conflict list`."
+      },
+      "hunk_id": {
+        "type": "integer",
+        "description": "Zero-based hunk index within the file. Must match a hunk returned by `shuttle conflict get-hunk`."
+      },
+      "merged_text": {
+        "type": "string",
+        "description": "The resolved text to replace the entire conflict hunk region. Must not contain any conflict markers. Should preserve the logical intent of BOTH sides."
+      },
+      "rationale": {
+        "type": "string",
+        "description": "One-sentence explanation of why this merge preserves both sides' intent. Used for audit trail in the ConflictReceipt."
+      }
+    },
+    "required": [
+      "file",
+      "hunk_id",
+      "merged_text"
+    ]
+  },
+  "annotations": {
+    "level": "L2",
+    "deterministic": false,
+    "model_involved": true,
+    "side_effects": "Overwrites the hunk byte range in `file` on disk. Does NOT stage (git add) — shuttle supervisor gates verify before staging.",
+    "safety_invariants": [
+      "merged_text must not contain '<<<<<<<', '=======', '>>>>>>>'",
+      "only covers hunk_id byte range — never touches other hunks",
+      "shuttle supervisor will run `shuttle conflict verify` before accepting",
+      "never commits or pushes"
+    ],
+    "pi_injection": {
+      "flag": "--extension",
+      "tool_source": "shuttle conflict subcommand bridge",
+      "invocation": "shuttle conflict propose --file <file> --hunk-id <n> --merged-text <text>"
+    },
+    "spec_refs": [
+      "docs/git_conflict_pi_plugin_decision.md §3.2 (propose)",
+      "docs/shuttle_wraps_pi_architecture.md §8.5 (落地清单 item 2)"
+    ]
+  }
+}

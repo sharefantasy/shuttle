@@ -1,0 +1,36 @@
+[package]
+name = "shuttle-lsp-bridge"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Off-by-default real-LSP adapter for shuttle: tier-3 type-level capabilities kept isolated behind a feature flag."
+
+# shuttle-lsp-bridge — §9.9 tier-3 "real LSP on demand" adapter.
+#
+# This crate is an ISOLATION boundary: type-level capabilities (goto type
+# definition, completion, type hierarchy) that need a real language server are
+# kept OUT of shuttle-nav and live here behind an OFF-by-default `real-lsp` feature.
+# With the feature disabled (the default), nothing spawns and the core `shuttle`
+# binary depends on no LSP server. Output always normalises to `shuttle_nav::NavHit`
+# (source=Lsp, confidence=High). "用完即走": spawn -> query -> kill, never
+# resident (aligned with §8's no-daemon boundary).
+[features]
+default = []
+# Enable to compile the real language-server adapters (spawns rust-analyzer /
+# tsserver / pyright on demand). Off by default so the core stays LSP-free.
+real-lsp = []
+
+[dependencies]
+shuttle-nav.workspace = true
+# Pure codeAction exposure (§9.9 D2): lower shuttle's own RefactorPlans into LSP
+# WorkspaceEdits. No language server involved, so this stays in the default
+# build — unlike the `real-lsp` tier-3 adapters above.
+shuttle-refactor.workspace = true
+shuttle-protocol.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[lints]
+workspace = true

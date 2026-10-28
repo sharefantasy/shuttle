@@ -1,0 +1,27 @@
+[package]
+name = "shuttle-editcore"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "The hot-path apply engine for shuttle: 4-tier fuzzy content-anchored search/replace."
+
+[dependencies]
+shuttle-protocol.workspace = true
+similar.workspace = true
+imara-diff.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+
+[features]
+default = ["fuzzy-similar"]
+# Similarity backend for the fuzzy-apply tier. Switch to imara for throughput.
+fuzzy-similar = []
+fuzzy-imara = []
+
+[[bench]]
+name = "apply_latency"
+harness = false
+
+[lints]
+workspace = true

@@ -1,0 +1,7 @@
+id: py-assert-eq-to-assertEqual
+language: python
+severity: hint
+message: "prefer unittest's assertEqual over bare assert =="
+rule:
+  pattern: assert $A == $B
+fix: self.assertEqual($A, $B)

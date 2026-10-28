@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "targets": {
+    "bin_main": {
+      "kind": "linux-bin",
+      "ref": "refs/heads/release/bin",
+      "build": "./release/build-bin.sh",
+      "smoke": "./release/smoke-bin.sh",
+      "activate": "./release/activate-bin.sh",
+      "healthcheck": "./release/healthcheck-bin.sh",
+      "artifact": "dist/shuttle",
+      "homebrew": {
+        "package_name": "shuttle",
+        "formula_name": "shuttle",
+        "binary_name": "shuttle",
+        "desc": "Private shuttle release",
+        "homepage": "https://example.invalid/private/shuttle"
+      }
+    }
+  }
+}

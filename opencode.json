@@ -1,0 +1,14 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "shuttle": {
+      "type": "local",
+      "command": ["python3", "extensions/shuttle_mcp_shim.py"],
+      "environment": {
+        "SHUTTLE_BIN": ".shuttletmp/target/debug/shuttle"
+      },
+      "enabled": true,
+      "timeout": 60000
+    }
+  }
+}

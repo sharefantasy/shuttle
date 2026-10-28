@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "intent": "add validation to process() and create a helper module",
+  "ops": [
+    {
+      "kind": "search_replace",
+      "path": "example/service.py",
+      "search": "    def process(self, data):\n        return data",
+      "replace": "    def process(self, data):\n        validate(data)\n        return data"
+    },
+    {
+      "kind": "create_file",
+      "path": "example/validators.py",
+      "content": "def validate(data):\n    if data is None:\n        raise ValueError('data required')\n    return data\n"
+    },
+    {
+      "kind": "codemod",
+      "rule_id": "py-requests-add-timeout",
+      "paths": ["example"]
+    }
+  ]
+}

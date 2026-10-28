@@ -1,0 +1,45 @@
+[package]
+name = "shuttle-cli"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "The `shuttle` binary: host-agent entry point for shuttle's edit, navigation, refactor, and cell-run capabilities."
+
+[[bin]]
+name = "shuttle"
+path = "src/main.rs"
+
+[dependencies]
+shuttle-protocol.workspace = true
+shuttle-locate.workspace = true
+shuttle-symbols.workspace = true
+shuttle-nav.workspace = true
+shuttle-editcore.workspace = true
+shuttle-codemod.workspace = true
+shuttle-conflict.workspace = true
+shuttle-goal.workspace = true
+shuttle-runtime-tools.workspace = true
+shuttle-refactor.workspace = true
+shuttle-ui.workspace = true
+shuttle-lsp-bridge.workspace = true
+serde.workspace = true
+clap.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+libc.workspace = true
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+# Passthrough to shuttle-refactor's optional TypeScript type bridge (docs §6). Off by
+# default: `cargo build -p shuttle-cli --features ts-morph` to let `shuttle refactor
+# extract-method` fill TS return-type placeholders via a one-shot ts-morph call.
+default = []
+ts-morph = ["shuttle-refactor/ts-morph"]
+
+[lints]
+workspace = true

@@ -1,0 +1,40 @@
+{
+  "schema_version": "ea_release_config/v1",
+  "binary_name": "shuttle",
+  "package_prefix": "shuttle",
+  "binary_targets": [
+    {"target": "x86_64-unknown-linux-gnu", "asset_suffix": "linux-amd64"},
+    {"target": "aarch64-unknown-linux-gnu", "asset_suffix": "linux-arm64"},
+    {"target": "x86_64-apple-darwin", "asset_suffix": "darwin-amd64", "github_runner": "macos-15-intel"},
+    {"target": "aarch64-apple-darwin", "asset_suffix": "darwin-arm64", "github_runner": "macos-15"}
+  ],
+  "docker": {
+    "platforms": ["linux/amd64", "linux/arm64"],
+    "targets": {
+      "core": {
+        "image_suffix": "-core",
+        "max_uncompressed_bytes": 31457280,
+        "required_paths": ["/usr/local/bin/shuttle"],
+        "forbidden_commands": ["git", "rg", "ctags", "docker", "container-use", "node", "pi"]
+      },
+      "tools": {
+        "image_suffix": "-tools",
+        "max_uncompressed_bytes": 62914560,
+        "required_paths": ["/opt/shuttle-tools/manifest.json", "/opt/shuttle-tools/checksums.sha256", "/opt/shuttle-tools/sbom.cdx.json", "/opt/shuttle-tools/licenses/NOTICE"],
+        "forbidden_commands": ["docker", "container-use", "node", "pi"]
+      },
+      "full": {
+        "image_suffix": "",
+        "max_uncompressed_bytes": 104857600,
+        "required_paths": ["/usr/local/bin/shuttle", "/opt/shuttle-tools/manifest.json"],
+        "forbidden_commands": ["docker", "container-use", "node", "pi"]
+      }
+    },
+    "size_exceptions": "release/size-exceptions.json"
+  },
+  "platforms": {
+    "github": {"api_base": "https://api.github.com", "registry": "ghcr.io", "workflow": ".github/workflows/release.yml"},
+    "gitea": {"api_suffix": "/api/v1", "workflow": ".gitea/workflows/release.yml"},
+    "gitee": {"api_base": "https://gitee.com/api/v5", "workflow": ".workflow/release.yml"}
+  }
+}

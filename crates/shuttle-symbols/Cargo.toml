@@ -1,0 +1,23 @@
+[package]
+name = "shuttle-symbols"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "ctags-backed symbol table, repo-map, and symbol-level reference graph for shuttle."
+
+[dependencies]
+anyhow.workspace = true
+thiserror.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+shuttle-runtime-tools.workspace = true
+
+# Symbol table + repo-map layer. Replaces LSP: no long-running language
+# server, no multi-second cold start. Shells out to `universal-ctags`
+# (--output-format=json) for a millisecond whole-repo scan, and uses
+# tree-sitter only for local scope disambiguation (M3+). See docs/architecture.md
+# §7 and §7.5.
+
+[lints]
+workspace = true

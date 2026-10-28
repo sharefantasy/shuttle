@@ -1,0 +1,22 @@
+[package]
+name = "shuttle-conflict"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Git merge-conflict resolution engine for shuttle."
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+thiserror.workspace = true
+imara-diff.workspace = true
+shuttle-protocol.workspace = true
+shuttle-symbols.workspace = true
+shuttle-runtime-tools.workspace = true
+
+[dev-dependencies]
+
+[lints]
+workspace = true

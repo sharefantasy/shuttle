@@ -1,0 +1,20 @@
+[package]
+name = "shuttle-codemod"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "ast-grep rule-driven, zero-token mechanical edits for shuttle."
+
+[dependencies]
+anyhow.workspace = true
+thiserror.workspace = true
+serde = { workspace = true, features = ["derive"] }
+serde_json.workspace = true
+shuttle-runtime-tools.workspace = true
+
+# Codemod layer drives ast-grep rule files (rules/*.yml) for zero-token,
+# mechanical edits. Shells out to `sg scan`.
+
+[lints]
+workspace = true
