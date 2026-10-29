@@ -2252,11 +2252,16 @@ mod tests {
 
     /// Live-ctags E2E: scan a real Thrift file on disk and confirm the symbols
     /// (service, struct, typedef, member) come through with normalized kinds.
-    /// Skipped when universal-ctags is unavailable (matches the nav-layer guard).
+    /// Skipped when universal-ctags is unavailable or its build has no Thrift
+    /// parser (matches the nav-layer guard).
     #[test]
     fn scan_thrift_file_end_to_end() {
         if ctags_backend().is_err() {
             eprintln!("universal-ctags unavailable; skipping thrift E2E");
+            return;
+        }
+        if !ctags_supports_thrift() {
+            eprintln!("ctags build has no Thrift parser; skipping thrift E2E");
             return;
         }
         let dir = scratch_dir("scan_thrift");
@@ -2306,6 +2311,25 @@ mod tests {
             .arg("--version")
             .output()
             .map(|o| o.status.success())
+            .unwrap_or(false)
+    }
+
+    /// The Thrift parser is not present in every Universal Ctags build (the
+    /// 2021-era package shipped by some distros predates it). Probe the build
+    /// itself rather than assuming the binary implies the parser.
+    fn ctags_supports_thrift() -> bool {
+        let Ok(ctags) = ctags_backend() else {
+            return false;
+        };
+        Command::new(ctags)
+            .arg("--list-kinds-full=Thrift")
+            .output()
+            .map(|o| {
+                o.status.success()
+                    && String::from_utf8_lossy(&o.stdout)
+                        .lines()
+                        .any(|l| !l.trim().is_empty() && !l.trim_start().starts_with('#'))
+            })
             .unwrap_or(false)
     }
 

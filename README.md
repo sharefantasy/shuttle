@@ -45,7 +45,8 @@ cargo build --release
 可选外部工具在 `PATH` 上存在时会升级分析阶梯：
 [universal-ctags](https://github.com/universal-ctags/ctags)（符号索引）和
 [ast-grep](https://ast-grep.github.io/)（结构化匹配）。二者缺失时，
-`shuttle` 退化为文本级结果而不是失败。
+`shuttle` 退化为文本级结果而不是失败。Thrift 符号需要带 Thrift 解析器的
+ctags 构建（6.x）；部分发行版 apt 包仍是 5.9，对该语言会没有符号。
 
 ## 核心思想
 
